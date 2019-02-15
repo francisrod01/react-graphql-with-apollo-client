@@ -31,8 +31,8 @@
 
 .Item-list li {
   margin: auto;
-  width: 20%;
-  height: 3em;
+  margin-bottom: 10px;
+  width: 100%;
   text-align: left;
-  border: 1px dotted gray;
+  border-bottom: 1px dotted gray;
 }
