@@ -1,16 +1,29 @@
 import React, { Component } from 'react';
-import { ApolloClient } from 'apollo-boost';
+import { ApolloClient, InMemoryCache } from 'apollo-boost';
 import gql from 'graphql-tag';
 import {
   graphql,
   ApolloProvider
 } from 'react-apollo';
+import {
+  makeExecutableSchema,
+  addMockFunctionsToSchema
+} from 'graphql-tools';
+import { SchemaLink } from 'apollo-link-schema';
+
+import { typeDefs } from './schema';
 
 import logo from './logo.svg';
 import './App.css';
 
 
-const apolloClient = new ApolloClient();
+const schema = makeExecutableSchema({ typeDefs });
+addMockFunctionsToSchema({ schema });
+
+const apolloClient = new ApolloClient({
+  link: new SchemaLink({ schema }),
+  cache: new InMemoryCache()
+});
 
 const channelsListQuery = gql`
   query ChannelsListQuery {
