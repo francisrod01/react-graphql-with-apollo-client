@@ -1,4 +1,8 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# React GraphQL data query using Apollo client #
+
+This project was bootstrapped with [Create React App][1] and [Apollo 2.0][2].
+
+Author: [Francis Rodrigues][3]
 
 ## Available Scripts
 
@@ -66,3 +70,8 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+
+  [1]: https://github.com/facebook/create-react-app
+  [2]: https://github.com/apollographql/react-apollo
+  [3]: https://github.com/francisrod01
