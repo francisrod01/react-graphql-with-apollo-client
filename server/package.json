@@ -1,0 +1,16 @@
+{
+  "name": "react-graphql-server",
+  "version": "0.1.0",
+  "description": "A GraphQL server with Express",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nodejs",
+    "graphql",
+    "express"
+  ],
+  "author": "Francis Rodrigues",
+  "license": "MIT"
+}
