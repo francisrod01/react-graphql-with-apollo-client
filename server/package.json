@@ -12,5 +12,8 @@
     "express"
   ],
   "author": "Francis Rodrigues",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "graphql-tools": "^4.0.4"
+  }
 }
