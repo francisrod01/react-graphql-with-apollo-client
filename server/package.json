@@ -18,5 +18,10 @@
     "express": "^4.16.4",
     "graphql-server-express": "^1.4.0",
     "graphql-tools": "^4.0.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/register": "^7.4.0"
   }
 }
