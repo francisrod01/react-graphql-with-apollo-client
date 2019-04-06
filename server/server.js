@@ -1,10 +1,12 @@
 import express from "express";
+import { graphqlExpress } from "graphql-server-express";
+import bodyParser from "body-parser";
+
+import { schema } from "./schema";
 
 const PORT = process.env.PORT || 4000;
 const server = express();
 
-server.get('/', (req, res) => {
-  res.send('Hello World by Express!');
-});
+server.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
 
 server.listen(PORT, () => console.log(`Express Server is running on http://localhost:${PORT}`));
