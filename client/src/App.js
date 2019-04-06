@@ -10,6 +10,8 @@ import {
   ApolloProvider
 } from 'react-apollo';
 
+import ChannelsList from "./components/ChannelsList";
+
 import logo from './logo.svg';
 import './App.css';
 
@@ -26,23 +28,6 @@ const channelsListQuery = gql`
     }
   }
 `;
-
-const ChannelsList = ({ data: { loading, error, channels } }) => {
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-  if (error) {
-    return <p>{error.message}</p>;
-  }
-
-  return (
-    <ul className="Item-list">
-      {
-        channels.map(ch => <li key={ch.id}>{ch.name}</li>)
-      }
-    </ul>
-  );
-}
 
 const ChannelsListWithData = graphql(channelsListQuery)(ChannelsList);
 

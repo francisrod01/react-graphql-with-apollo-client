@@ -25,11 +25,11 @@
   font-size: large;
 }
 
-.Item-list {
+.channelsList {
   list-style: none;
 }
 
-.Item-list li {
+.channel {
   margin: auto;
   margin-bottom: 10px;
   width: 100%;
