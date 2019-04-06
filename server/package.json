@@ -15,6 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
     "express": "^4.16.4",
     "graphql": "^14.2.1",
     "graphql-server-express": "^1.4.0",
