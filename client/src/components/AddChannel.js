@@ -8,15 +8,28 @@ const AddChannel = ({ mutate }) => {
   const handleKeyUp = evt => {
     // If ENTER key has been pressed, then proceed.
     if (evt.keyCode === 13) {
-      evt.persist();
-
       mutate({
         variables: { name: evt.target.value },
-        refetchQueries: [{ query: channelsListQuery }],
-      })
-      .then(res => {
-        evt.target.value = "";
+        optimisticResponse: {
+          addChannel: {
+            __typename: "Channel",
+            id: Math.round(Math.random() * -1000000),
+            name: evt.target.value,
+          },
+        },
+        update: (store, { data: { addChannel } }) => {
+          // Read the data from the cache for this query.
+          const data = store.readQuery({ query: channelsListQuery });
+
+          // Add our channel from the mutation to the end.
+          data.channels.push(addChannel);
+
+          // Write the data back to the cache.
+          store.writeQuery({ query: channelsListQuery, data });
+        },
       });
+
+      evt.target.value = "";
     }
   };
 
