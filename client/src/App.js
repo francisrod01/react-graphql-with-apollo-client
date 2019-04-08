@@ -4,13 +4,9 @@ import {
   InMemoryCache,
   HttpLink
 } from 'apollo-boost';
-import gql from 'graphql-tag';
-import {
-  graphql,
-  ApolloProvider
-} from 'react-apollo';
+import { ApolloProvider } from 'react-apollo';
 
-import ChannelsList from "./components/ChannelsList";
+import ChannelsListWithData from "./components/ChannelsListWithData";
 
 import logo from './logo.svg';
 import './App.css';
@@ -19,17 +15,6 @@ const apolloClient = new ApolloClient({
   link: new HttpLink({ uri: "http://localhost:4000/graphql" }),
   cache: new InMemoryCache()
 });
-
-const channelsListQuery = gql`
-  query ChannelsListQuery {
-    channels {
-      id
-      name
-    }
-  }
-`;
-
-const ChannelsListWithData = graphql(channelsListQuery)(ChannelsList);
 
 
 class App extends Component {

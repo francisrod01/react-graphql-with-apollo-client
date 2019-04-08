@@ -2,6 +2,8 @@ import React from "react";
 import gql from "graphql-tag";
 import { graphql } from "react-apollo";
 
+import { channelsListQuery } from "./ChannelsListWithData";
+
 const AddChannel = ({ mutate }) => {
   const handleKeyUp = evt => {
     // If ENTER key has been pressed, then proceed.
@@ -9,7 +11,8 @@ const AddChannel = ({ mutate }) => {
       evt.persist();
 
       mutate({
-        variables: { name: evt.target.value }
+        variables: { name: evt.target.value },
+        refetchQueries: [{ query: channelsListQuery }],
       })
       .then(res => {
         evt.target.value = "";
