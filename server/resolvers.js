@@ -30,6 +30,7 @@ const channels = [
 ];
 
 let nextId = 3;
+let newMessageId = 5;
 
 export const resolvers = {
   Query: {
@@ -45,6 +46,16 @@ export const resolvers = {
       const newChannel = { id: String(nextId++), messages: [], name: args.name };
       channels.push(newChannel);
       return newChannel;
+    },
+    addMessage: (root, { message }) => {
+      const channel = channels.find(channel => channel.id === message.channelId);
+      if (!channel) {
+        throw new Error("Channel does not exist!");
+      }
+
+      const newMessage = { id: String(newMessageId++), text: message.text };
+      channel.messages.push(newMessage);
+      return newMessage;
     },
   },
 };

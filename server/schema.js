@@ -21,10 +21,16 @@ const typeDefs = `
     channel(id: ID!): Channel
   }
 
+  input MessageInput {
+    channelId: ID!
+    text: String
+  }
+
   # The mutation root type, used to define all mutations.
   type Mutation {
     # A mutation to add a new channel to the list of channels
     addChannel(name: String!): Channel
+    addMessage(message: MessageInput!): Message
   }
 `;
 
