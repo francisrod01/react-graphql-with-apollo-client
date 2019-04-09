@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
 import {
+  BrowserRouter,
+  Link,
+  Route,
+  Switch
+} from "react-router-dom";
+import {
   ApolloClient,
   InMemoryCache,
   HttpLink
@@ -7,8 +13,9 @@ import {
 import { ApolloProvider } from 'react-apollo';
 
 import ChannelsListWithData from "./components/ChannelsListWithData";
+import ChannelDetails from "./components/ChannelDetails";
+import NotFound from "./components/NotFound";
 
-import logo from './logo.svg';
 import './App.css';
 
 const apolloClient = new ApolloClient({
@@ -21,23 +28,17 @@ class App extends Component {
   render() {
     return (
       <ApolloProvider client={apolloClient}>
-        <div className="App">
-          <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <h2>Welcome to Apollo!</h2>
+        <BrowserRouter>
+          <div className="App">
+            <Link to="/" className="navbar">React + GraphQL tutorial</Link>
 
-            <ChannelsListWithData />
-
-            <a
-              className="App-link"
-              href="https://reactjs.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn React
-            </a>
-          </header>
-        </div>
+            <Switch>
+              <Route exact path="/" component={ChannelsListWithData} />
+              <Route exact path="/channel/:channelId" component={ChannelDetails} />
+              <Route component={NotFound} />
+            </Switch>
+          </div>
+        </BrowserRouter>
       </ApolloProvider>
     );
   }
