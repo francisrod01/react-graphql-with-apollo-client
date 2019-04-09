@@ -2,6 +2,9 @@ import React from "react";
 import gql from "graphql-tag";
 import { graphql } from "react-apollo";
 
+import MessageList from "./MessageList";
+import NotFound from "./NotFound";
+
 const ChannelDetails = ({ data: { loading, error, channel }}, match) => {
   if (loading) {
     return <p>Loading...</p>;
@@ -9,12 +12,17 @@ const ChannelDetails = ({ data: { loading, error, channel }}, match) => {
   if (error) {
     return <p>{error.message}</p>;
   }
+  if (channel === null) {
+    return <NotFound />
+  }
 
   return (
     <div>
       <div className="channelName">
         {channel.name}
       </div>
+
+      <MessageList messages={channel.messages} />
     </div>
   );
 }
@@ -24,6 +32,10 @@ export const channelDetailsQuery = gql`
     channel(id: $channelId) {
       id
       name
+      messages {
+        id
+        text
+      }
     }
   }
 `;
