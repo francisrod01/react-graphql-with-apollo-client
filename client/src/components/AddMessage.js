@@ -52,7 +52,7 @@ const AddMessage = ({ mutate, match }) => {
   };
 
   return (
-    <div className="messagesInput">
+    <div className="messageInput">
       <input
         type="text"
         placeholder="New message"
