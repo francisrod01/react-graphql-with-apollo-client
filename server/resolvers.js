@@ -1,3 +1,5 @@
+import { PubSub, withFilter } from "graphql-subscriptions";
+
 const channels = [
   {
     id: "1",
@@ -32,6 +34,9 @@ const channels = [
 let nextId = 3;
 let newMessageId = 5;
 
+// An instance to handle the subscription topics for our application.
+const pubsub = new PubSub();
+
 export const resolvers = {
   Query: {
     channels: () => {
@@ -55,7 +60,22 @@ export const resolvers = {
 
       const newMessage = { id: String(newMessageId++), text: message.text };
       channel.messages.push(newMessage);
+
+      // Publishing the message into the subscription manager.
+      pubsub.publish("messageAdded", { messageAdded: newMessage, channelId: message.channelId });
+
       return newMessage;
+    },
+  },
+  // GraphQL subscription query.
+  Subscription: {
+    messageAdded: {
+      subscribe: withFilter(() =>
+        pubsub.asyncIterator("messageAdded"),
+        (payload, variables) => {
+          return payload.channelId === variables.channelId;
+        },
+      )
     },
   },
 };
