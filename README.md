@@ -4,6 +4,8 @@ This project was bootstrapped with [Create React App][1] and [Apollo 2.0][2] bas
 
 Author: [Francis Rodrigues][4]
 
+![application-screenshot](./screenshots/react-graphql-app.png)
+
 **Dependencies version:**
 
 * ![react-logo](./screenshots/react-24.png) React `^16.8.2`
