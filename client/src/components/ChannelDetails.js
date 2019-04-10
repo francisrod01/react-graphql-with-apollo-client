@@ -2,12 +2,13 @@ import React from "react";
 import gql from "graphql-tag";
 import { graphql } from "react-apollo";
 
+import ChannelPreview from "./ChannelPreview";
 import MessageList from "./MessageList";
 import NotFound from "./NotFound";
 
-const ChannelDetails = ({ data: { loading, error, channel }}, match) => {
+const ChannelDetails = ({ data: { loading, error, channel }, match }) => {
   if (loading) {
-    return <p>Loading...</p>;
+    return <ChannelPreview channelId={match.params.channelId} />;
   }
   if (error) {
     return <p>{error.message}</p>;

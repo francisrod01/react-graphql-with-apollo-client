@@ -10,7 +10,10 @@ import {
   InMemoryCache,
   HttpLink
 } from 'apollo-boost';
-import { ApolloProvider } from 'react-apollo';
+import {
+  ApolloProvider,
+  toIdvalue
+} from 'react-apollo';
 
 import ChannelsListWithData from "./components/ChannelsListWithData";
 import ChannelDetails from "./components/ChannelDetails";
@@ -18,9 +21,28 @@ import NotFound from "./components/NotFound";
 
 import './App.css';
 
+// Tag GraphQL objects in the cache.
+const dataIdFromObject = result => {
+  if (result.__typename) {
+    if (result.id !== undefined) {
+      return `${result.__typename}:${result.id}`;
+    }
+  }
+  return null;
+}
+
 const apolloClient = new ApolloClient({
   link: new HttpLink({ uri: "http://localhost:4000/graphql" }),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  customResolvers: {
+    Query: {
+      channel: (_, args) => {
+        // Ensures an ID type is returned.
+        return toIdvalue(dataIdFromObject({ __typename: "Channel", id: args["id"] }));
+      },
+    },
+  },
+  dataIdFromObject,
 });
 
 
