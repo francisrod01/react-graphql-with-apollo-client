@@ -5,11 +5,15 @@ import {
   Route,
   Switch
 } from "react-router-dom";
+
 import {
   ApolloClient,
   InMemoryCache,
-  HttpLink
+  split,
+  HttpLink,
 } from 'apollo-boost';
+import { WebSocketLink } from "apollo-link-ws";
+import { getMainDefinition } from 'apollo-utilities';
 import {
   ApolloProvider,
   toIdvalue
@@ -31,8 +35,33 @@ const dataIdFromObject = result => {
   return null;
 }
 
+// Create an http link
+const httpLink = new HttpLink({
+  uri: "http://localhost:4000/graphql"
+});
+
+// Create a WebSocket link
+const wsLink = new WebSocketLink({
+  uri: "ws://localhost:4000/subscriptions",
+  options: {
+    reconnect: true
+  }
+});
+
+// Using the ability to split links, you can send data to each link
+// depending on what kind of operation is being sent.
+const link = split(
+  // split based on operation type
+  ({ query }) => {
+    const { kind, operation } = getMainDefinition(query);
+    return kind === "OperationDefinition" && operation === "subscription";
+  },
+  wsLink,
+  httpLink
+);
+
 const apolloClient = new ApolloClient({
-  link: new HttpLink({ uri: "http://localhost:4000/graphql" }),
+  link,
   cache: new InMemoryCache(),
   customResolvers: {
     Query: {
