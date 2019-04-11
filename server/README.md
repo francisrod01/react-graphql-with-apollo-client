@@ -41,7 +41,13 @@ Your React + GraphQL application can now access the link http://localhost:4000/g
 
 Now that you start successfully the server application, you can access directly the link http://localhost:4000/graphiql by browser and use the `Graphiql` in-browser IDE for exploring GraphQL.
 
+**Channel list:**
+
 ![graphiql-screenshot](../screenshots/graphiql.png)
+
+**Message feed with cursor:**
+
+![graphiql-message-feed-screenshot](../screenshots/graphiql-message-feed.png)
 
 You can read more about [GraphiQL here][2]
 
