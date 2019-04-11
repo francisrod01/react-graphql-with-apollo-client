@@ -46,6 +46,44 @@ export const resolvers = {
       return channels.find(channel => channel.id === id);
     },
   },
+  // The new resolvers are under the Channel type
+  Channel: {
+    messageFeed: (channel, { cursor }) => {
+      // The cursor passed by the client will be an integer timestamp.
+      // If no cursor is passed, set the cursor to the time the last
+      // channel message was created.
+      if (!cursor) {
+        cursor = channel.messages[channel.messages.lenght - 1].createdAt;
+      }
+
+      cursor = parseInt(cursor);
+
+      // Limit is the number of messages we will return.
+      // We could pass it as an argument but in this case let's use a
+      // static value.
+      const limit = 10;
+
+      // Find the message index created at time held on the cursor
+      const newestMessageIndex = channel.messages.findIndex(
+        message => message.createdAt === cursor
+      );
+
+      // We need to return a new cursor to the client so that it can find
+      // the next page. Let's set newCursor to the createdAt time of the
+      // last message in the messageFeed.
+      const newCursor = channel.messages[newestMessageIndex - limit].createdAt;
+
+      const messageFeed = {
+        messages: channel.messages.slice(
+          newestMessageIndex - limit,
+          newestMessageIndex
+        ),
+        cursor: newCursor,
+      };
+
+      return messageFeed;
+    }
+  },
   Mutation: {
     addChannel: (root, args) => {
       const newChannel = { id: String(nextId++), messages: [], name: args.name };
