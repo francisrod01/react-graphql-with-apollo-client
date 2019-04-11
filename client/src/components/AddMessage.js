@@ -33,9 +33,10 @@ const AddMessage = ({ mutate, match }) => {
             },
           });
 
-          if (!data.channel.messages.find(msg => msg.id === addMessage.id)) {
+          // Don't double add the message.
+          if (!data.channel.messageFeed.messages.find(msg => msg.id === addMessage.id)) {
             // Add our Message from the mutation to the end.
-            data.channel.messages.push(addMessage);
+            data.channel.messageFeed.messages.push(addMessage);
           }
 
           // Write the data back to the cache.
