@@ -53,20 +53,23 @@ class ChannelDetails extends Component {
           {channel.name}
         </div>
 
-        <MessageList messages={channel.messages} />
+        <MessageList messages={channel.messageFeed.messages} />
       </div>
     );
   }
 }
 
 export const channelDetailsQuery = gql`
-  query ChannelDetailsQuery($channelId: ID!) {
+  query ChannelDetailsQuery($channelId: ID!, $cursor: String) {
     channel(id: $channelId) {
       id
       name
-      messages {
-        id
-        text
+      messageFeed(cursor: $cursor) @connection(key: "messageFeed") {
+        cursor
+        messages {
+          id
+          text
+        }
       }
     }
   }
