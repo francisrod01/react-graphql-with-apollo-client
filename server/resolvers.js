@@ -1,38 +1,57 @@
 import { PubSub, withFilter } from "graphql-subscriptions";
+import faker from "faker";
 
-const channels = [
-  {
-    id: "1",
-    name: 'soccer',
-    messages: [
-      {
-        id: "1",
-        text: 'soccer if football'
-      },
-      {
-        id: "2",
-        text: 'hello soccer world cup!'
-      }
-    ]
-  },
-  {
-    id: "2",
-    name: 'baseball',
-    messages: [
-      {
-        id: "3",
-        text: 'baseball is life'
-      },
-      {
-        id: "4",
-        text: 'hello baseball world series!'
-      }
-    ]
-  }
-];
+const channels = [];
+let lastChannelId = 0;
+let lastMessageId = 0;
+let messageCreatedAt = 123456789;
 
-let nextId = 3;
-let newMessageId = 5;
+
+// Adding a fake channel.
+const addChannel = name => {
+  lastChannelId++;
+
+  const newChannel = {
+    id: String(lastChannelId),
+    name,
+    messages: [],
+  };
+
+  channels.push(newChannel);
+
+  return lastChannelId;
+}
+
+// Getting a channel by id.
+const getChannel = id =>
+  channels.find(channel => channel.id === id);
+
+// Adding a fake message to a channel.
+const addFakeMessage = (channel, messageText) => {
+  lastMessageId++;
+  messageCreatedAt++;
+
+  const newMessage = {
+    id: lastMessageId,
+    text: messageText,
+    createdAt: messageCreatedAt,
+  };
+
+  channel.messages.push(newMessage);
+}
+
+// Use faker to generate random messages in faker channel.
+addChannel("faker");
+const fakerChannel = channels.find(channel => channel.name === "faker");
+
+// Add seed for consistent random data.
+faker.seed(9);
+for (let i = 0; i < 50; i++) {
+  addFakeMessage(fakerChannel, faker.random.words());
+}
+
+// Generate second channel for initial channel list view.
+addChannel("channel2");
 
 // An instance to handle the subscription topics for our application.
 const pubsub = new PubSub();
@@ -43,7 +62,7 @@ export const resolvers = {
       return channels;
     },
     channel: (root, { id }) => {
-      return channels.find(channel => channel.id === id);
+      return getChannel(id);
     },
   },
   // The new resolvers are under the Channel type
@@ -53,7 +72,7 @@ export const resolvers = {
       // If no cursor is passed, set the cursor to the time the last
       // channel message was created.
       if (!cursor) {
-        cursor = channel.messages[channel.messages.lenght - 1].createdAt;
+        cursor = channel.messages[channel.messages.length - 1].createdAt;
       }
 
       cursor = parseInt(cursor);
@@ -86,9 +105,9 @@ export const resolvers = {
   },
   Mutation: {
     addChannel: (root, args) => {
-      const newChannel = { id: String(nextId++), messages: [], name: args.name };
-      channels.push(newChannel);
-      return newChannel;
+      const name = args.name;
+      const id = addChannel(name);
+      return getChannel(id);
     },
     addMessage: (root, { message }) => {
       const channel = channels.find(channel => channel.id === message.channelId);
@@ -96,11 +115,18 @@ export const resolvers = {
         throw new Error("Channel does not exist!");
       }
 
-      const newMessage = { id: String(newMessageId++), text: message.text };
+      const newMessage = {
+        id: String(lastMessageId++),
+        text: message.text,
+        createdAt: +new Date(),
+      };
       channel.messages.push(newMessage);
 
       // Publishing the message into the subscription manager.
-      pubsub.publish("messageAdded", { messageAdded: newMessage, channelId: message.channelId });
+      pubsub.publish("messageAdded", {
+        messageAdded: newMessage,
+        channelId: message.channelId
+      });
 
       return newMessage;
     },
@@ -111,6 +137,8 @@ export const resolvers = {
       subscribe: withFilter(() =>
         pubsub.asyncIterator("messageAdded"),
         (payload, variables) => {
+          // The `messageAdded` channel includes events for all channels, so we filter
+          // to only pass through events for the channel specified in the query.
           return payload.channelId === variables.channelId;
         },
       )
