@@ -37,7 +37,7 @@ class ChannelDetails extends Component {
     });
   }
   render() {
-    const { data: { loading, error, channel }, match } = this.props;
+    const { data: { loading, error, channel }, match, loadOlderMessages } = this.props;
 
     if (loading) {
       return <ChannelPreview channelId={match.params.channelId} />;
@@ -54,6 +54,10 @@ class ChannelDetails extends Component {
         <div className="channelName">
           {channel.name}
         </div>
+
+        <button onClick={loadOlderMessages}>
+          Load Older Messages
+        </button>
 
         <MessageList messages={channel.messageFeed.messages} />
       </div>
@@ -89,5 +93,37 @@ const messagesSubscription = gql`
 export default (graphql(channelDetailsQuery, {
   options: props => ({
     variables: { channelId: props.match.params.channelId },
+  }),
+  props: props => ({
+    data: props.data,
+    loadOlderMessages: () => {
+      return props.data.fetchMore({
+        variables: {
+          channelId: props.data.channel.id,
+          cursor: props.data.channel.messageFeed.cursor,
+        },
+        updateQuery(previousResult, { fetchMoreResult }) {
+          const prevMessageFeed = previousResult.channel.messageFeed;
+          const newMessageFeed = fetchMoreResult.channel.messageFeed;
+
+          const newChannelData = {
+            ...previousResult.channel,
+            messageFeed: {
+              messages: [
+                ...prevMessageFeed.messages,
+                ...newMessageFeed.messages,
+              ],
+            },
+          };
+
+          const newData = {
+            ...previousResult,
+            channel: newChannelData,
+          };
+
+          return newData;
+        }
+      })
+    }
   }),
 })(ChannelDetails));
