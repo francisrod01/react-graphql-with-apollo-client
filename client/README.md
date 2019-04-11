@@ -50,8 +50,13 @@ To create a production build, use npm run build.
 
 Now you can access the link http://localhost:3000 and see the application running successfully. :ok_hand:
 
+## References
+
+* [Apollo Client DevTools][2] - Apollo DevTools extension for Chrome & Firefox
+
 ## License
 
 MIT
 
   [1]: https://github.com/francisrod01
+  [2]: https://github.com/apollographql/apollo-client-devtools
